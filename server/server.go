@@ -30,6 +30,7 @@ func New() (svr *echo.Echo) {
 			return h(cc)
 		}
 	})
+	svr.Pre(middleware.RemoveTrailingSlash())
 	svr.Use(middleware.Logger())
 	svr.Use(middleware.Recover())
 
