@@ -9,30 +9,16 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 	"github.com/stryveapp/stryve-api/middleware"
+	"github.com/stryveapp/stryve-api/router"
 )
-
-// CustomContext is a custom context that extends Echo's
-// base Context implementation
-type CustomContext struct {
-	echo.Context
-}
 
 // New creates a new instance of App, which
 // is an extension of Echo
 func New() (svr *echo.Echo) {
 	svr = echo.New()
+	router.RegisterRoutes(svr)
+	middleware.RegisterMiddleware(svr)
 	svr.Logger.SetLevel(log.INFO)
-
-	// Middleware
-	svr.Use(func(h echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			cc := &CustomContext{c}
-			return h(cc)
-		}
-	})
-	svr.Pre(middleware.RemoveTrailingSlash())
-	svr.Use(middleware.Logger())
-	svr.Use(middleware.Recover())
 
 	return svr
 }
