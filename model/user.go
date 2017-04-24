@@ -17,6 +17,7 @@ type User struct {
 	Password          string `json:"password"`
 	Avatar            string `json:"avatar"`
 	VerificationToken string `json:"verification_token"`
+	CanLogIn          bool   `json:"can_log_in"`
 	CommonDates
 }
 

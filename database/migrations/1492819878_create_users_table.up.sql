@@ -7,7 +7,7 @@ CREATE TABLE users(
     password VARCHAR(60) NOT NULL,
     avatar VARCHAR(150),
     verification_token VARCHAR(60),
-    can_login_in BOOLEAN NOT NULL DEFAULT TRUE,
+    can_log_in BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP DEFAULT NULL,
@@ -15,5 +15,5 @@ CREATE TABLE users(
     PRIMARY KEY (id)
 );
 
-INSERT INTO users (username, email, first_name, last_name, password, can_login_in, created_at, updated_at) VALUES
+INSERT INTO users (username, email, first_name, last_name, password, can_log_in, created_at, updated_at) VALUES
     ('system_user', 'system_user@localhost', 'System', 'User', crypt('fRousluf75utro8c', gen_salt('bf')), FALSE, DATE_TRUNC('second', CURRENT_TIMESTAMP), DATE_TRUNC('second', CURRENT_TIMESTAMP));
