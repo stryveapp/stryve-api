@@ -57,6 +57,7 @@ func TestIsValidUsersame(t *testing.T) {
 		{"sa1d31asd321a32s1d3sssssss", false}, // too long, max 25 characters required
 		{"inv4lid-name", false},               // no dash characters allowed
 		{"us3rn4me!", false},                  // no special characters allowed
+		{"MyUserName", false},                 // no uppercase characters allowed
 		{"12345678", true},
 		{"0_____0", true},
 		{"_______", true},
