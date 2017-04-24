@@ -11,6 +11,7 @@ import (
 type User struct {
 	PrimaryID
 	Username          string `json:"username"`
+	DisplayName       string `json:"display_name"`
 	FirstName         string `json:"first_name"`
 	LastName          string `json:"last_name"`
 	Email             string `json:"email"`

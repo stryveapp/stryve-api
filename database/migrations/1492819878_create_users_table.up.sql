@@ -1,6 +1,7 @@
 CREATE TABLE users(
     id SERIAL,
     username VARCHAR(25) NOT NULL UNIQUE,
+    display_name VARCHAR(25) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     first_name VARCHAR(50),
     last_name VARCHAR(50),
@@ -15,5 +16,5 @@ CREATE TABLE users(
     PRIMARY KEY (id)
 );
 
-INSERT INTO users (username, email, first_name, last_name, password, can_log_in, created_at, updated_at) VALUES
-    ('system_user', 'system_user@localhost', 'System', 'User', crypt('fRousluf75utro8c', gen_salt('bf')), FALSE, DATE_TRUNC('second', CURRENT_TIMESTAMP), DATE_TRUNC('second', CURRENT_TIMESTAMP));
+INSERT INTO users (username, display_name, email, first_name, last_name, password, can_log_in, created_at, updated_at) VALUES
+    ('system_user', 'System_User', 'system_user@localhost', 'System', 'User', crypt('fRousluf75utro8c', gen_salt('bf')), FALSE, DATE_TRUNC('second', CURRENT_TIMESTAMP), DATE_TRUNC('second', CURRENT_TIMESTAMP));

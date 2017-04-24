@@ -29,6 +29,7 @@ func (h *Handler) Register(c echo.Context) error {
 
 	user := new(model.User)
 	user.Username = params.Username
+	user.DisplayName = params.DisplayName
 	user.Email = params.Email
 	user.Password = params.Password
 	user.Save(h.DB)

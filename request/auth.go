@@ -1,21 +1,27 @@
 package request
 
 import (
+	"strings"
+
 	"github.com/go-pg/pg"
 	"github.com/labstack/echo"
 	"github.com/stryveapp/stryve-api/validator"
 )
 
 type RegisterRequest struct {
-	Username string
-	Email    string
-	Password string
+	Username    string
+	DisplayName string
+	Email       string
+	Password    string
 }
 
 // ValidateRegisterRequest validates the /auth/register POST request
 func ValidateRegisterRequest(db *pg.DB, c echo.Context) (interface{}, []string) {
 	var req RegisterRequest
 	c.Bind(&req)
+
+	req.DisplayName = req.Username
+	req.Username = strings.ToLower(req.DisplayName)
 
 	v := &validator.Validator{DB: db}
 
