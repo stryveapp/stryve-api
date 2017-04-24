@@ -1,10 +1,22 @@
 package: github.com/stryveapp/stryve-api
 import:
+- package: github.com/BurntSushi/toml
+- package: github.com/go-pg/pg
+  version: ^6.1.0
+  subpackages:
+  - orm
 - package: github.com/labstack/echo
-  version: ^3.0.0
+  version: ^3.0.3
   subpackages:
   - middleware
 - package: github.com/labstack/gommon
-  version: ^0.2.0
   subpackages:
   - log
+- package: github.com/mattes/migrate
+  version: ^3.0.0
+  subpackages:
+  - database/postgres
+  - source/file
+- package: golang.org/x/crypto
+  subpackages:
+  - bcrypt

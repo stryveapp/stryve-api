@@ -1,8 +1,20 @@
-hash: 4718577c0f8e9db4790be58c3bc0c9795514935dfc931dec7f03ae84357e59c3
-updated: 2017-04-22T08:19:32.474481123+10:00
+hash: 1d9c13e9436acea548bc1e7aedfa648ab93bcc9d60cc3e7677d0d758745c65dd
+updated: 2017-04-25T05:36:03.930373896+10:00
 imports:
+- name: github.com/BurntSushi/toml
+  version: b26d9c308763d68093482582cea63d69be07a0f0
 - name: github.com/dgrijalva/jwt-go
   version: 2268707a8f0843315e2004ee4f1d021dc08baedf
+- name: github.com/go-pg/pg
+  version: fe3699c336cb7dbd24dca8ed9e0f1f3447f6b0f1
+  subpackages:
+  - internal
+  - internal/parser
+  - internal/pool
+  - orm
+  - types
+- name: github.com/jinzhu/inflection
+  version: 1c35d901db3da928c72a72d8458480cc9ade058f
 - name: github.com/labstack/echo
   version: 948d607539e92f3974d8f24951c8975d7342e24a
   subpackages:
@@ -14,6 +26,17 @@ imports:
   - color
   - log
   - random
+- name: github.com/lib/pq
+  version: 2704adc878c21e1329f46f6e56a1c387d788ff94
+  subpackages:
+  - oid
+- name: github.com/mattes/migrate
+  version: 1676a902f2e5c1be1a98d1a1fa3ea0fd6d1c2621
+  subpackages:
+  - database
+  - database/postgres
+  - source
+  - source/file
 - name: github.com/mattn/go-colorable
   version: ded68f7a9561c023e790de24279db7ebf473ea80
 - name: github.com/mattn/go-isatty
@@ -27,6 +50,8 @@ imports:
   subpackages:
   - acme
   - acme/autocert
+  - bcrypt
+  - blowfish
 - name: golang.org/x/sys
   version: ea9bcade75cb975a0b9738936568ab388b845617
   subpackages:
