@@ -1,10 +1,11 @@
 package config
 
 import (
+	"path"
+	"runtime"
 	"strings"
 
 	"github.com/BurntSushi/toml"
-	"github.com/stryveapp/stryve-api/util"
 )
 
 var (
@@ -40,8 +41,12 @@ type databaseConfig struct {
 // SetDefaultConfig set the servers default configuration set
 func SetDefaultConfig() {
 	var conf config
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("No caller information")
+	}
 
-	path := strings.Join([]string{util.GetCWD(), "config", "config.toml"}, "/")
+	path := strings.Join([]string{path.Dir(filename), "config.toml"}, "/")
 	if _, err := toml.DecodeFile(path, &conf); err != nil {
 		panic(err)
 	}
