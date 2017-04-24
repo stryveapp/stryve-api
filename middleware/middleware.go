@@ -6,8 +6,8 @@ import (
 )
 
 // RegisterMiddleware registers all required middleware
-func RegisterMiddleware(svr *echo.Echo) {
-	svr.Pre(middleware.RemoveTrailingSlash())
-	svr.Use(middleware.Logger())
-	svr.Use(middleware.Recover())
+func RegisterMiddleware(e *echo.Echo) {
+	e.Pre(middleware.RemoveTrailingSlash())
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 }

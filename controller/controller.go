@@ -1,5 +1,12 @@
 package controller
 
+import "github.com/go-pg/pg"
+
+// Handler is the handler for route controller actions
+type Handler struct {
+	DB *pg.DB
+}
+
 // BaseResponse is the base HTTP response
 type BaseResponse struct {
 	Success bool `json:"success"`
@@ -16,7 +23,7 @@ type HTTPSuccess struct {
 // failed requests
 type HTTPError struct {
 	BaseResponse
-	Error map[string]string `json:"errors,omitempty"`
+	Error []string `json:"errors,omitempty"`
 }
 
 // NewHTTPSuccess returns a successful request
@@ -29,7 +36,7 @@ func NewHTTPSuccess(v interface{}) *HTTPSuccess {
 }
 
 // NewHTTPError returns a failed request
-func NewHTTPError(errors map[string]string) *HTTPError {
+func NewHTTPError(errors []string) *HTTPError {
 	resp := new(HTTPError)
 	resp.Success = false
 	resp.Error = errors

@@ -19,17 +19,19 @@ var (
 	Port int
 
 	// DB is a list of availble datbase connections
-	DB map[string]databaseConfig
+	DB map[string]DatabaseConfig
 )
 
 type config struct {
 	Env       string
 	Port      int
 	Debug     bool
-	Databases map[string]databaseConfig
+	Databases map[string]DatabaseConfig
 }
 
-type databaseConfig struct {
+// DatabaseConfig is the configuration set for
+// a PstgresSQL connection
+type DatabaseConfig struct {
 	Host     string
 	Port     int
 	SSLMode  string `toml:"ssl_mode"`

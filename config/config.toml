@@ -10,3 +10,19 @@ ssl_mode = "disable"
 name = "stryve"
 username = "stryve"
 password = "secret"
+
+[databases.test]
+host = "192.168.50.50"
+port = 5432
+ssl_mode = "disable"
+name = "stryve_test"
+username = "stryve"
+password = "secret"
+
+[databases.prod]
+host = "192.168.50.50"
+port = 5432
+ssl_mode = "disable"
+name = "stryve"
+username = "stryve_prod"
+password = "secret"

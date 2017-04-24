@@ -3,26 +3,31 @@ package router
 import (
 	"github.com/labstack/echo"
 	"github.com/stryveapp/stryve-api/controller"
+	"github.com/stryveapp/stryve-api/database"
 )
 
 // RegisterRoutes registers all API routes for the app
-func RegisterRoutes(svr *echo.Echo) {
+func RegisterRoutes(e *echo.Echo) {
+	h := &controller.Handler{
+		DB: database.NewConnection(),
+	}
+
 	// AUTH ROUTES
-	svr.POST("/auth/login", controller.Login)
-	svr.GET("/auth/logout", controller.Logout)
-	svr.POST("/auth/register", controller.Register)
+	e.POST("/auth/login", h.Login)
+	e.GET("/auth/logout", h.Logout)
+	e.POST("/auth/register", h.Register)
 
 	// USER ROUTES
-	svr.GET("/v1/users", controller.GetUsers)
-	svr.GET("/v1/users/:id", controller.GetUser)
-	svr.POST("/v1/users", controller.CreateUser)
-	svr.PUT("/v1/users/:id", controller.UpdateUser)
-	svr.DELETE("/v1/users/:id", controller.DeleteUser)
+	e.GET("/v1/users", h.GetUsers)
+	e.GET("/v1/users/:id", h.GetUser)
+	e.POST("/v1/users", h.CreateUser)
+	e.PUT("/v1/users/:id", h.UpdateUser)
+	e.DELETE("/v1/users/:id", h.DeleteUser)
 
 	// COMMUNITY ROUTES
-	svr.GET("/v1/communities", controller.GetCommunities)
-	svr.GET("/v1/communities/:id", controller.GetCommunity)
-	svr.POST("/v1/communities", controller.CreateCommunity)
-	svr.PUT("/v1/communities/:id", controller.UpdateCommunity)
-	svr.DELETE("/v1/communities/:id", controller.DeleteCommunity)
+	e.GET("/v1/communities", h.GetCommunities)
+	e.GET("/v1/communities/:id", h.GetCommunity)
+	e.POST("/v1/communities", h.CreateCommunity)
+	e.PUT("/v1/communities/:id", h.UpdateCommunity)
+	e.DELETE("/v1/communities/:id", h.DeleteCommunity)
 }

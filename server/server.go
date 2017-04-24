@@ -10,41 +10,46 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
 	"github.com/stryveapp/stryve-api/config"
+	"github.com/stryveapp/stryve-api/database"
 	"github.com/stryveapp/stryve-api/middleware"
 	"github.com/stryveapp/stryve-api/router"
 )
 
 // New creates a new instance of App, which
 // is an extension of Echo
-func New() (svr *echo.Echo) {
-	svr = echo.New()
-	svr.Debug = config.Debug
-	router.RegisterRoutes(svr)
-	middleware.RegisterMiddleware(svr)
-	svr.Logger.SetLevel(log.INFO)
+func New() (e *echo.Echo) {
+	e = echo.New()
+	e.Debug = config.Debug
+	e.Logger.SetLevel(log.INFO)
+	router.RegisterRoutes(e)
+	middleware.RegisterMiddleware(e)
 
-	return svr
+	return e
 }
 
 // StartServer starts the API server
-func StartServer(svr *echo.Echo) {
+func StartServer(e *echo.Echo) {
 	go func() {
-		if err := svr.Start(fmt.Sprintf(":%d", config.Port)); err != nil {
-			svr.Logger.Info("Unable to start server")
+		if err := e.Start(fmt.Sprintf(":%d", config.Port)); err != nil {
+			e.Logger.Info("Unable to start server")
 		}
 	}()
 
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
-	StopServer(svr)
+	StopServer(e)
 }
 
 // StopServer stops the API server gracefully
-func StopServer(svr *echo.Echo) {
+func StopServer(e *echo.Echo) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	if err := svr.Shutdown(ctx); err != nil {
-		svr.Logger.Fatal(err)
+
+	db := database.NewConnection()
+	defer db.Close() // close any all
+
+	if err := e.Shutdown(ctx); err != nil {
+		e.Logger.Fatal(err)
 	}
 }

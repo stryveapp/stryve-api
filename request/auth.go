@@ -1,29 +1,51 @@
 package request
 
 import (
-	"github.com/asaskevich/govalidator"
+	"github.com/go-pg/pg"
 	"github.com/labstack/echo"
+	"github.com/stryveapp/stryve-api/validator"
 )
 
 type RegisterRequest struct {
-	Username string `valid:"length(3|25)~username:Username must be between 3 and 25 characters long,username~username:Username can only contain alpanumeric and underscore characters,required~username:Username is required,unique_username~username:Username is already taken"`
-	Email    string `valid:"email~email:Invalid email address,required~email:Email is required,unique_email~email:Email address is already registered"`
-	Password string `valid:"length(8|99)~password:Password must be a minimum of 8 characters long,password~password:Password must contain both numbers and letters,required~password:Password is required"`
+	Username string
+	Email    string
+	Password string
 }
 
-func validateRegisterRequest(c echo.Context) (interface{}, map[string]string) {
+// ValidateRegisterRequest validates the /auth/register POST request
+func ValidateRegisterRequest(db *pg.DB, c echo.Context) (interface{}, []string) {
 	var req RegisterRequest
-
 	c.Bind(&req)
-	_, err := govalidator.ValidateStruct(req)
-	if err != nil {
-		return nil, formatRequestErrors(err)
+
+	v := &validator.Validator{DB: db}
+
+	if req.Email == "" || req.Username == "" || req.Password == "" {
+		v.Errors = append(v.Errors, "All feilds are required")
 	}
 
-	return req, map[string]string{}
-}
+	// VALIDATE USERNAME
+	if !v.IsValidStringLength(req.Username, 8, 25) {
+		v.Errors = append(v.Errors, "Username must be between 3 and 25 characters long")
+	}
+	if !v.IsValidUsername(req.Username) {
+		v.Errors = append(v.Errors, "Username can only contain alpanumeric and underscore characters")
+	}
+	if !v.IsUniqueUsername(req.Username) {
+		v.Errors = append(v.Errors, "Username is already taken")
+	}
 
-func validateLoginRequest(c echo.Context) map[string]string {
-	// TODO
-	return map[string]string{}
+	// VALIDATE EMAIL
+	if !v.IsValidEmail(req.Email) {
+		v.Errors = append(v.Errors, "Invalid email address")
+	}
+	if !v.IsUniqueEmail(req.Email) {
+		v.Errors = append(v.Errors, "Email is already registered")
+	}
+
+	// VALIDATE PASSWORD
+	if !v.IsValidPassword(req.Password) {
+		v.Errors = append(v.Errors, "Password must contain both numbers and letters, and be a minimum of 8 characters long")
+	}
+
+	return req, v.Errors
 }

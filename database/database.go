@@ -7,26 +7,9 @@ import (
 	"github.com/stryveapp/stryve-api/config"
 )
 
-// DB is the database layer
-type DB struct {
-}
-
-// Open opens the DB connection
-func Open() *pg.DB {
-	var db *DB
-	return db.OpenConnection(config.Env)
-}
-
-// Close closes the provided database connection
-func (db *DB) Close(conn *pg.DB) {
-	if err := conn.Close(); err != nil {
-		panic(err)
-	}
-}
-
-// GetConnection returns the info required to establish a DB connection
-func (db *DB) GetConnection(connEnv string) *pg.DB {
-	connInfo := config.DB[connEnv]
+// NewConnection opens and retruns the specified DB connection
+func NewConnection(connection ...string) *pg.DB {
+	connInfo := getConnectionInfo(connection...)
 
 	return pg.Connect(&pg.Options{
 		Addr:     fmt.Sprintf("%s:%d", connInfo.Host, connInfo.Port),
@@ -36,8 +19,36 @@ func (db *DB) GetConnection(connEnv string) *pg.DB {
 	})
 }
 
-// OpenConnection opens and returns a new DB connection
-// based on the environment passed in
-func (db *DB) OpenConnection(connEnv string) *pg.DB {
-	return db.GetConnection(connEnv)
+func getConnectionString(connection ...string) string {
+	connInfo := getConnectionInfo(connection...)
+
+	return fmt.Sprintf(
+		"postgres://%s:%s@%s:%d/%s?sslmode=%s",
+		connInfo.Username,
+		connInfo.Password,
+		connInfo.Host,
+		connInfo.Port,
+		connInfo.Name,
+		connInfo.SSLMode,
+	)
+}
+
+func getConnectionInfo(connection ...string) config.DatabaseConfig {
+	var conn string
+
+	if len(connection) == 1 {
+		connectionTypes := []string{"dev", "test", "prod"}
+		for _, connType := range connectionTypes {
+			if connection[0] == connType {
+				conn = connType
+				break
+			}
+		}
+	}
+
+	if conn == "" {
+		conn = config.Env
+	}
+
+	return config.DB[conn]
 }
