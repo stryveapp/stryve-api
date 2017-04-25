@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"path"
 	"runtime"
 	"strings"
@@ -40,21 +41,23 @@ type DatabaseConfig struct {
 	Password string
 }
 
-// SetDefaultConfig set the servers default configuration set
-func SetDefaultConfig() {
+// SetDefaultConfig sets the servers default configuration set
+func SetDefaultConfig() error {
 	var conf config
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
-		panic("No caller information")
+		return errors.New("No caller information")
 	}
 
 	path := strings.Join([]string{path.Dir(filename), "config.toml"}, "/")
 	if _, err := toml.DecodeFile(path, &conf); err != nil {
-		panic(err)
+		return err
 	}
 
 	Env = conf.Env
 	Debug = conf.Debug
 	Port = conf.Port
 	DB = conf.Databases
+
+	return nil
 }

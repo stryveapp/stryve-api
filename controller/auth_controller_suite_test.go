@@ -18,9 +18,10 @@ import (
 )
 
 var (
-	m  *migrate.Migrate
-	db *pg.DB
-	h  *controller.Handler
+	m   *migrate.Migrate
+	db  *pg.DB
+	h   *controller.Handler
+	err error
 )
 
 func TestController(t *testing.T) {
@@ -29,16 +30,23 @@ func TestController(t *testing.T) {
 }
 
 var _ = BeforeSuite(func() {
-	config.SetDefaultConfig()
+	err = config.SetDefaultConfig()
+	Expect(err).NotTo(HaveOccurred())
+
 	db = database.NewConnection("test")
 	h = &controller.Handler{db}
-	m = database.NewMigration("test")
-	m.Up()
+
+	m, err = database.NewMigration("test")
+	Expect(err).NotTo(HaveOccurred())
+	err = m.Up()
+	Expect(err).NotTo(HaveOccurred())
 })
 
 var _ = AfterSuite(func() {
-	m.Down()
-	db.Close()
+	err = m.Down()
+	Expect(err).NotTo(HaveOccurred())
+	err = db.Close()
+	Expect(err).NotTo(HaveOccurred())
 })
 
 func JSONAPIRequest(method string, route string, jsonData *strings.Reader) (*controller.Handler, echo.Context, *httptest.ResponseRecorder) {
@@ -63,7 +71,8 @@ var _ = Describe("Auth Controller", func() {
 			requestBody := `{"username":"janedoe","email":"janedoe@example.com","password":"MyP4ssw0rd"}`
 			handler, context, recorder := JSONAPIRequest("POST", "/auth/register", strings.NewReader(requestBody))
 
-			Expect(handler.Register(context)).ShouldNot(HaveOccurred())
+			err := handler.Register(context)
+			Expect(err).ShouldNot(HaveOccurred())
 			Expect(recorder.Code).To(Equal(http.StatusCreated))
 			Expect(recorder.Body.String()).To(Equal(`{"success":true}`))
 		})
@@ -72,7 +81,8 @@ var _ = Describe("Auth Controller", func() {
 			requestBody := `{}`
 			handler, context, recorder := JSONAPIRequest("POST", "/auth/register", strings.NewReader(requestBody))
 
-			Expect(handler.Register(context)).ShouldNot(HaveOccurred())
+			err := handler.Register(context)
+			Expect(err).ShouldNot(HaveOccurred())
 			Expect(recorder.Code).To(Equal(http.StatusBadRequest))
 			Expect(recorder.Body.String()).To(Equal(`{"success":false,"errors":["All feilds are required"]}`))
 		})
@@ -81,7 +91,8 @@ var _ = Describe("Auth Controller", func() {
 			requestBody := `{"username":"a4","email":"janedoe2@example.com","password":"MyP4ssw0rd"}`
 			handler, context, recorder := JSONAPIRequest("POST", "/auth/register", strings.NewReader(requestBody))
 
-			Expect(handler.Register(context)).ShouldNot(HaveOccurred())
+			err := handler.Register(context)
+			Expect(err).ShouldNot(HaveOccurred())
 			Expect(recorder.Code).To(Equal(http.StatusBadRequest))
 			Expect(recorder.Body.String()).To(Equal(`{"success":false,"errors":["Username can only contain alpanumeric and underscore characters, and must be between 3 and 25 characters long"]}`))
 		})
@@ -90,7 +101,8 @@ var _ = Describe("Auth Controller", func() {
 			requestBody := `{"username":"janedoe","email":"janedoe2@example.com","password":"MyP4ssw0rd"}`
 			handler, context, recorder := JSONAPIRequest("POST", "/auth/register", strings.NewReader(requestBody))
 
-			Expect(handler.Register(context)).ShouldNot(HaveOccurred())
+			err := handler.Register(context)
+			Expect(err).ShouldNot(HaveOccurred())
 			Expect(recorder.Code).To(Equal(http.StatusBadRequest))
 			Expect(recorder.Body.String()).To(Equal(`{"success":false,"errors":["Username is already taken"]}`))
 		})
@@ -99,7 +111,8 @@ var _ = Describe("Auth Controller", func() {
 			requestBody := `{"username":"janedoe3","email":"janedoeATexample.com","password":"MyP4ssw0rd"}`
 			handler, context, recorder := JSONAPIRequest("POST", "/auth/register", strings.NewReader(requestBody))
 
-			Expect(handler.Register(context)).ShouldNot(HaveOccurred())
+			err := handler.Register(context)
+			Expect(err).ShouldNot(HaveOccurred())
 			Expect(recorder.Code).To(Equal(http.StatusBadRequest))
 			Expect(recorder.Body.String()).To(Equal(`{"success":false,"errors":["Invalid email address"]}`))
 		})
@@ -108,7 +121,8 @@ var _ = Describe("Auth Controller", func() {
 			requestBody := `{"username":"janedoe2","email":"janedoe@example.com","password":"MyP4ssw0rd"}`
 			handler, context, recorder := JSONAPIRequest("POST", "/auth/register", strings.NewReader(requestBody))
 
-			Expect(handler.Register(context)).ShouldNot(HaveOccurred())
+			err := handler.Register(context)
+			Expect(err).ShouldNot(HaveOccurred())
 			Expect(recorder.Code).To(Equal(http.StatusBadRequest))
 			Expect(recorder.Body.String()).To(Equal(`{"success":false,"errors":["Email address is already registered"]}`))
 		})
@@ -117,7 +131,8 @@ var _ = Describe("Auth Controller", func() {
 			requestBody := `{"username":"janedoe2","email":"janedoe3@example.com","password":"password"}`
 			handler, context, recorder := JSONAPIRequest("POST", "/auth/register", strings.NewReader(requestBody))
 
-			Expect(handler.Register(context)).ShouldNot(HaveOccurred())
+			err := handler.Register(context)
+			Expect(err).ShouldNot(HaveOccurred())
 			Expect(recorder.Code).To(Equal(http.StatusBadRequest))
 			Expect(recorder.Body.String()).To(Equal(`{"success":false,"errors":["Password must contain both numbers and letters, and be a minimum of 8 characters long"]}`))
 		})

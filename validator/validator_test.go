@@ -12,11 +12,6 @@ import (
 	"github.com/stryveapp/stryve-api/validator"
 )
 
-var (
-	v *validator.Validator
-	m *migrate.Migrate
-)
-
 func TestValidator(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Validator Test Suite")
@@ -24,10 +19,19 @@ func TestValidator(t *testing.T) {
 
 var _ = Describe("Validators", func() {
 
+	var (
+		v   *validator.Validator
+		m   *migrate.Migrate
+		err error
+	)
+
 	BeforeEach(func() {
-		config.SetDefaultConfig()
-		m = database.NewMigration("test")
-		m.Up()
+		err = config.SetDefaultConfig()
+		Expect(err).NotTo(HaveOccurred())
+
+		m, err = database.NewMigration("test")
+		Expect(err).NotTo(HaveOccurred())
+		err = m.Up()
 
 		v = &validator.Validator{
 			DB: database.NewConnection("test"),
@@ -35,8 +39,10 @@ var _ = Describe("Validators", func() {
 	})
 
 	AfterEach(func() {
-		m.Down()
-		v.DB.Close()
+		err = m.Down()
+		Expect(err).NotTo(HaveOccurred())
+		err = v.DB.Close()
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	It("should pass string length test cases", func() {

@@ -47,7 +47,7 @@ func StopServer(e *echo.Echo) {
 	defer cancel()
 
 	db := database.NewConnection()
-	defer db.Close() // close any all
+	defer db.Close() // close any and all DB connections
 
 	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal(err)

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"path"
 	"runtime"
 	"strings"
@@ -11,10 +12,10 @@ import (
 )
 
 // NewMigration returns a new migration instance
-func NewMigration(conn string) *migrate.Migrate {
+func NewMigration(conn string) (*migrate.Migrate, error) {
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
-		panic("No caller information")
+		return &migrate.Migrate{}, errors.New("No caller information")
 	}
 
 	migrationsPath := strings.Join([]string{"file:/", path.Dir(filename), "migrations"}, "/")
@@ -23,5 +24,5 @@ func NewMigration(conn string) *migrate.Migrate {
 		panic(err)
 	}
 
-	return m
+	return m, nil
 }

@@ -6,7 +6,10 @@ import (
 )
 
 func init() {
-	config.SetDefaultConfig()
+	err := config.SetDefaultConfig()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func main() {
