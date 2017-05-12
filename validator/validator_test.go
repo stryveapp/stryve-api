@@ -1,49 +1,14 @@
 package validator_test
 
 import (
-	"testing"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/mattes/migrate"
-	"github.com/stryveapp/stryve-api/config"
-	"github.com/stryveapp/stryve-api/database"
 	"github.com/stryveapp/stryve-api/validator"
 )
 
-func TestValidator(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Validator Test Suite")
-}
-
-var _ = Describe("Validators", func() {
-
-	var (
-		v   *validator.Validator
-		m   *migrate.Migrate
-		err error
-	)
-
-	BeforeEach(func() {
-		err = config.SetDefaultConfig()
-		Expect(err).NotTo(HaveOccurred())
-
-		m, err = database.NewMigration("test")
-		Expect(err).NotTo(HaveOccurred())
-		err = m.Up()
-
-		v = &validator.Validator{
-			DB: database.NewConnection("test"),
-		}
-	})
-
-	AfterEach(func() {
-		err = m.Down()
-		Expect(err).NotTo(HaveOccurred())
-		err = v.DB.Close()
-		Expect(err).NotTo(HaveOccurred())
-	})
+var _ = Describe("Validator", func() {
+	var v *validator.Validator
 
 	It("should pass string length test cases", func() {
 		testCases := []struct {
@@ -71,7 +36,7 @@ var _ = Describe("Validators", func() {
 			{"sa1d31asd321a32s1d3sssssss", false}, // too long, max 25 characters required
 			{"inv4lid-name", false},               // no dash characters allowed
 			{"us3rn4me!", false},                  // no special characters allowed
-			{"MyUserName", false},                 // no uppercase characters allowed
+			{"MyUserName", true},
 			{"12345678", true},
 			{"0_____0", true},
 			{"_______", true},
@@ -136,36 +101,6 @@ var _ = Describe("Validators", func() {
 		for _, tc := range testCases {
 			ok := v.IsValidPassword(tc.password)
 			Expect(ok).To(Equal(tc.isValid))
-		}
-	})
-
-	It("should pass unique email test cases", func() {
-		testCases := []struct {
-			email    string
-			isUnique bool
-		}{
-			{"system_user@localhost", false},
-			{"unique_email@localhost", true},
-		}
-
-		for _, tc := range testCases {
-			ok := v.IsUniqueEmail(tc.email)
-			Expect(ok).To(Equal(tc.isUnique))
-		}
-	})
-
-	It("should pass unique username test cases", func() {
-		testCases := []struct {
-			username string
-			isUnique bool
-		}{
-			{"system_user", false},
-			{"unique_user", true},
-		}
-
-		for _, tc := range testCases {
-			ok := v.IsUniqueUsername(tc.username)
-			Expect(ok).To(Equal(tc.isUnique))
 		}
 	})
 })
