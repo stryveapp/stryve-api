@@ -7,6 +7,10 @@ import (
 	"github.com/stryveapp/stryve-api/config"
 )
 
+const (
+	DuplicateKeyViolationError = "23505"
+)
+
 // NewConnection opens and retruns the specified DB connection
 func NewConnection(connection ...string) *pg.DB {
 	connInfo := getConnectionInfo(connection...)

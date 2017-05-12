@@ -4,13 +4,10 @@ import (
 	"regexp"
 	"unicode"
 
-	"github.com/go-pg/pg"
-	"github.com/stryveapp/stryve-api/model"
 	"github.com/stryveapp/stryve-api/util"
 )
 
 type Validator struct {
-	DB     *pg.DB
 	Errors []string
 }
 
@@ -57,24 +54,4 @@ func (v *Validator) IsValidPassword(str string) bool {
 	}
 
 	return hasLetters && hasNumbers
-}
-
-// IsUniqueEmail returns true is the provided string is
-// a unique email address in the users table
-func (v *Validator) IsUniqueEmail(str string) bool {
-	count, _ := v.DB.Model(&model.User{}).
-		Where("email = ?", str).
-		Count()
-
-	return count < 1
-}
-
-// IsUniqueUsername returns true is the provided string is
-// a unique username in the users table
-func (v *Validator) IsUniqueUsername(str string) bool {
-	count, _ := v.DB.Model(&model.User{}).
-		Where("username = ?", str).
-		Count()
-
-	return count < 1
 }
