@@ -1,0 +1,59 @@
+sudo: required
+
+dist: xenial
+
+language: go
+
+go:
+  - 1.7
+  - 1.8
+  - tip
+
+matrix:
+  allow_failures:
+    - go: tip
+
+dist: xenial
+
+services:
+  - postgresql
+
+addons:
+  postgresql: "9.6"
+
+env:
+  CI_SERVICE=travis-ci
+
+before_install:
+  - sudo /etc/init.d/postgresql stop
+  - sudo apt-get -y remove --purge postgresql-9.1
+  - sudo apt-get -y remove --purge postgresql-9.2
+  - sudo apt-get -y remove --purge postgresql-9.3
+  - sudo apt-get -y remove --purge postgresql-9.4
+  - sudo apt-get -y remove --purge postgresql-9.5
+  - sudo apt-get -y autoremove
+  - sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main"
+  - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  - sudo apt-get update
+  # - sudo apt-get upgrade
+  # - sudo apt-get dist-upgrade
+  # - sudo apt-get autoremove
+  - sudo apt-get -y install postgresql-9.6 postgresql-contrib-9.6
+  - sudo sh -c 'echo "local all all trust" > /etc/postgresql/9.6/main/pg_hba.conf'
+  - sudo sh -c 'echo -n "host all all 0.0.0.0/0 trust" >> /etc/postgresql/9.6/main/pg_hba.conf'
+  - sudo /etc/init.d/postgresql restart
+  - psql -u postgres -c "CREATE EXTENSION pgcrypto;"
+  - psql -U postgres -c "CREATE USER stryve WITH PASSWORD 'secret';"
+  - psql -U postgres -c 'CREATE DATABASE stryve_test;'
+  - psql -U postgres -c 'GRANT ALL PRIVILEGES ON DATABASE stryve_test TO stryve;'
+
+install:
+  - go get -v github.com/client9/misspell/cmd/misspell
+  - go get -v github.com/fzipp/gocyclo
+  - go get -v github.com/h12w/gosweep
+  - go get -v github.com/mattn/goveralls
+  - go get -v github.com/Masterminds/glide
+  - glide install
+
+script:
+  - bash ${GOPATH}/src/github.com/h12w/gosweep/gosweep.sh
