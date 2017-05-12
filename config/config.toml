@@ -12,7 +12,7 @@ username = "stryve"
 password = "secret"
 
 [databases.test]
-host = "192.168.50.50"
+host = "localhost"
 port = 5432
 ssl_mode = "disable"
 name = "stryve_test"
