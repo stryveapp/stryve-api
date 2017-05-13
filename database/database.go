@@ -8,6 +8,8 @@ import (
 )
 
 const (
+	// DuplicateKeyViolationError is error code generated when
+	// deuplicate key violation constraint is raised by postgres
 	DuplicateKeyViolationError = "23505"
 )
 

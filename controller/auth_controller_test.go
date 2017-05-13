@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"strings"
 
-	. "github.com/onsi/ginkgo"
-
 	"github.com/stryveapp/stryve-api/test"
 )
 

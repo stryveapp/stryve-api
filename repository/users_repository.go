@@ -9,6 +9,7 @@ import (
 	"github.com/stryveapp/stryve-api/validator"
 )
 
+// UsersRepo interacts with the users table in the DB
 type UsersRepo struct {
 	DB *pg.DB
 }
