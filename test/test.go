@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"strings"
 
-	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega"
 
 	"github.com/go-pg/pg"
 	"github.com/labstack/echo"
@@ -15,11 +15,15 @@ import (
 	"github.com/stryveapp/stryve-api/database"
 )
 
+var expect = gomega.Expect
+var haveOccurred = gomega.HaveOccurred
+var equal = gomega.Equal
+
 // JSONAPIRequest is a helper for running controller tests
 func JSONAPIRequest(db *pg.DB, method, route string, jsonData *strings.Reader) *httptest.ResponseRecorder {
 	e := echo.New()
 	request, err := http.NewRequest(method, route, jsonData)
-	Expect(err).NotTo(HaveOccurred())
+	expect(err).NotTo(haveOccurred())
 
 	request.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
@@ -28,7 +32,7 @@ func JSONAPIRequest(db *pg.DB, method, route string, jsonData *strings.Reader) *
 	handler := &controller.Handler{DB: db}
 
 	err = handler.Register(context)
-	Expect(err).ShouldNot(HaveOccurred())
+	expect(err).ShouldNot(haveOccurred())
 
 	return recorder
 }
@@ -36,16 +40,16 @@ func JSONAPIRequest(db *pg.DB, method, route string, jsonData *strings.Reader) *
 // JSONAPISetup is a helper for setting up controller tests
 func JSONAPISetup() (*pg.DB, *controller.Handler, *migrate.Migrate) {
 	err := config.SetDefaultConfig()
-	Expect(err).NotTo(HaveOccurred())
+	expect(err).NotTo(haveOccurred())
 
 	db := database.NewConnection("test")
 	h := &controller.Handler{DB: db}
 
 	m, err := database.NewMigration("test")
-	Expect(err).NotTo(HaveOccurred())
+	expect(err).NotTo(haveOccurred())
 
 	err = m.Up()
-	Expect(err).NotTo(HaveOccurred())
+	expect(err).NotTo(haveOccurred())
 
 	return db, h, m
 }
@@ -53,13 +57,13 @@ func JSONAPISetup() (*pg.DB, *controller.Handler, *migrate.Migrate) {
 // JSONAPITeardown is a helper for tearing down controller tests
 func JSONAPITeardown(db *pg.DB, m *migrate.Migrate) {
 	err := m.Down()
-	Expect(err).NotTo(HaveOccurred())
+	expect(err).NotTo(haveOccurred())
 	err = db.Close()
-	Expect(err).NotTo(HaveOccurred())
+	expect(err).NotTo(haveOccurred())
 }
 
 // JSONExpectResponseToEqual inspects and validated the JSON response
 func JSONExpectResponseToEqual(recorder *httptest.ResponseRecorder, codeExpected int, JSONExpected string) {
-	Expect(recorder.Code).To(Equal(codeExpected))
-	Expect(recorder.Body.String()).To(Equal(JSONExpected))
+	expect(recorder.Code).To(equal(codeExpected))
+	expect(recorder.Body.String()).To(equal(JSONExpected))
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/stryveapp/stryve-api/util"
 )
 
+// Validator is used for validating data
 type Validator struct {
 	Errors []string
 }

@@ -19,7 +19,7 @@ var (
 	// Port is the HTTP port to run the server on
 	Port int
 
-	// DB is a list of availble datbase connections
+	// DB is a list of available database connections
 	DB map[string]DatabaseConfig
 )
 

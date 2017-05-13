@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/mattes/migrate"
-	_ "github.com/mattes/migrate/database/postgres"
-	_ "github.com/mattes/migrate/source/file"
+	_ "github.com/mattes/migrate/database/postgres" // for postgres compatibility
+	_ "github.com/mattes/migrate/source/file"       // file system migrations
 )
 
 // NewMigration returns a new migration instance
