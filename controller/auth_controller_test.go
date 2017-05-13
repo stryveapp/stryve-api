@@ -33,7 +33,7 @@ var _ = Describe("Auth Controller", func() {
 			)
 		})
 
-		It("should return 400 Bad Request response for providing a username of incorect length", func() {
+		It("should return 400 Bad Request response for providing a username of incorrect length", func() {
 			requestBody := `{"username":"a4","email":"janedoe2@example.com","password":"MyP4ssw0rd"}`
 			recorder := test.JSONAPIRequest(db, "POST", "/auth/register", strings.NewReader(requestBody))
 
