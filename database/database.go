@@ -53,8 +53,8 @@ func getConnectionInfo(connection ...string) config.DatabaseConfig {
 	}
 
 	if conn == "" {
-		conn = config.Env
+		conn = config.Config.Env
 	}
 
-	return config.DB[conn]
+	return config.Config.Databases[conn]
 }

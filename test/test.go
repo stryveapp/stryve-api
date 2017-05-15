@@ -5,11 +5,10 @@ import (
 	"net/http/httptest"
 	"strings"
 
-	"github.com/onsi/gomega"
-
 	"github.com/go-pg/pg"
 	"github.com/labstack/echo"
 	"github.com/mattes/migrate"
+	"github.com/onsi/gomega"
 	"github.com/stryveapp/stryve-api/config"
 	"github.com/stryveapp/stryve-api/controller"
 	"github.com/stryveapp/stryve-api/database"
@@ -39,7 +38,7 @@ func JSONAPIRequest(db *pg.DB, method, route string, jsonData *strings.Reader) *
 
 // JSONAPISetup is a helper for setting up controller tests
 func JSONAPISetup() (*pg.DB, *controller.Handler, *migrate.Migrate) {
-	err := config.SetDefaultConfig()
+	err := config.LoadDefaultConfig()
 	expect(err).NotTo(haveOccurred())
 
 	db := database.NewConnection("test")

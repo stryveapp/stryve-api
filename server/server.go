@@ -19,7 +19,7 @@ import (
 // is an extension of Echo
 func New() (e *echo.Echo) {
 	e = echo.New()
-	e.Debug = config.Debug
+	e.Debug = config.Config.Debug
 	e.Logger.SetLevel(log.INFO)
 	router.RegisterRoutes(e)
 	middleware.RegisterMiddleware(e)
@@ -30,7 +30,7 @@ func New() (e *echo.Echo) {
 // StartServer starts the API server
 func StartServer(e *echo.Echo) {
 	go func() {
-		if err := e.Start(fmt.Sprintf(":%d", config.Port)); err != nil {
+		if err := e.Start(fmt.Sprintf(":%d", config.Config.Port)); err != nil {
 			e.Logger.Info("Unable to start server")
 		}
 	}()

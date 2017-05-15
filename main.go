@@ -1,14 +1,18 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/stryveapp/stryve-api/config"
 	"github.com/stryveapp/stryve-api/server"
 )
 
 func init() {
-	err := config.SetDefaultConfig()
+	err := config.LoadDefaultConfig()
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		os.Exit(1)
 	}
 }
 
