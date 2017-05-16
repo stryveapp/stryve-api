@@ -1,5 +1,5 @@
 hash: 1d9c13e9436acea548bc1e7aedfa648ab93bcc9d60cc3e7677d0d758745c65dd
-updated: 2017-05-13T08:17:51.285805172+10:00
+updated: 2017-05-16T20:59:07.4776654+10:00
 imports:
 - name: github.com/BurntSushi/toml
   version: b26d9c308763d68093482582cea63d69be07a0f0
@@ -55,6 +55,8 @@ imports:
   - matchers/support/goraph/node
   - matchers/support/goraph/util
   - types
+- name: github.com/Sirupsen/logrus
+  version: 5e5dc898656f695e2a086b8e12559febbfc01562
 - name: github.com/valyala/bytebufferpool
   version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
 - name: github.com/valyala/fasttemplate

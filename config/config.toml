@@ -1,7 +1,9 @@
-env = "dev"
-debug = true
-log_level = "debug"
-log_format = "text"
+env = "dev"             # dev / test / prod
+debug = true            # true / false
+log_level = "debug"     # debug / info / warn / error / fatal / panic
+log_format = "text"     # text / json
+log_path = ""
+log_filename = "stryve-api.log"
 port = 3000
 
 [databases]

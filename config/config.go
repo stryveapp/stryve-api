@@ -24,12 +24,16 @@ type config struct {
 	LogLevel string `toml:"log_level"`
 	// LogFormat is the format that logs will be written in
 	LogFormat string `toml:"log_format"`
+	// LogPath is the absolute file path to the directory where logs will be stored
+	LogPath string `toml:"log_path"`
+	// LogFilename is the name given to the log file
+	LogFilename string `toml:"log_filename"`
 	// DB is a list of available database connections
 	Databases map[string]DatabaseConfig
 }
 
 // DatabaseConfig is the configuration set for
-// a PstgresSQL connection
+// a PostgresSQL connection
 type DatabaseConfig struct {
 	Host     string
 	Port     int
